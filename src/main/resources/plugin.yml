@@ -1,0 +1,8 @@
+name: Voxelocity
+main: io.github.willywonka125.voxelocity.Voxel
+version: 0.0.1
+commands:
+  voxel:
+    description: Main Voxelocity command 
+    usage: /voxel
+    aliases: [vox, vx, voxelocity]
