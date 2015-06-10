@@ -1,0 +1,13 @@
+#Voxelocity config file
+#Add essentials warps here. These will be shown in the teleportation menu, in order from top to bottom. 
+#Case insensitive
+warps:
+  - portals
+  - shop
+  - wild
+  - wild2
+  - wild3
+#ItemID to use in the inventory menu to enter the teleport menu. Must be valid ItemID.
+tpMenuItem: 368
+#ItemID to use for each warp.
+warpItem: 276

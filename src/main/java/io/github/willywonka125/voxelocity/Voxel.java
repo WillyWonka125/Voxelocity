@@ -25,32 +25,33 @@ public class Voxel extends JavaPlugin implements Listener {
 	CommandExecutor wildExec = (CommandExecutor) wild;
 	
 	
-	public void onEnable() { //Gonna make an inventory menu!!! Get hyped!
+	public void onEnable() {
 		getLogger().info("Looking splended today. Keep it up!");
 		getCommand("wild").setExecutor(wildExec);
 		getServer().getPluginManager().registerEvents(this, this);
+		this.saveDefaultConfig();
+		
+		for (int i=1; i<this.getConfig().getList("warps").size(); i++) {
+			warps.add((String) this.getConfig().getList("warps").get(i));
+		}
 		
 	}
 	
 	public void onDisable() {
-		
+		this.saveConfig();
 	}
 	
-	public String[] warps = new String[] {
-			"Portals",
-			"shop",
-			"Wild",
-			"Wild2",
-			"Wild3",
-	};
+	public ArrayList<String> warps = new ArrayList<String>();
 	
 	public Inventory getMenuInv () {
-		ItemStack tpStack = new ItemStack(Material.ENDER_PEARL, 1);
+		ItemStack tpStack = new ItemStack(Material.getMaterial(getConfig().getInt("tpMenuItem")), 1);
+		getLogger().info("Material gotten: " + tpStack.getItemMeta().getDisplayName());
 		ItemMeta tpMeta = tpStack.getItemMeta();
 		tpMeta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Teleport");
 		List<String> lore = new ArrayList<String>(); 
 	    lore.add(ChatColor.GRAY + "Open the teleportation menu.");
 		tpMeta.setLore(lore);
+		tpStack.setItemMeta(tpMeta);
 		
 		Inventory menuInv = Bukkit.createInventory(null, 9, "Menu");
 		menuInv.setItem(0, tpStack);
@@ -59,18 +60,27 @@ public class Voxel extends JavaPlugin implements Listener {
 	
 	public Inventory getTpInv () {
 		Inventory tpInv = Bukkit.createInventory(null, 9, "Teleport"); //Make the initial inventory
+		Material mat = Material.getMaterial(getConfig().getInt("warpItem"));
 		
-		for (int i=0; i<warps.length; i++) { //This adds items that represent each warp
-			ItemStack tmp = new ItemStack(Material.DIAMOND_SWORD, i+1);
+		for (int i=0; i<warps.size(); i++) { //This adds items that represent each warp
+			ItemStack tmp = new ItemStack(mat, i+1);
 			ItemMeta meta = tmp.getItemMeta();
-			meta.setDisplayName(ChatColor.GOLD + warps[i]);
+			meta.setDisplayName(ChatColor.GOLD + warps.get(i));
+			tmp.setItemMeta(meta);
 			tpInv.setItem(i, tmp);
 		}
-		return tpInv;
+		
+		ItemStack back = new ItemStack(Material.ARROW, 1); //Create the back button to return to main menu
+		ItemMeta backmeta = back.getItemMeta();
+		backmeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Back");
+		back.setItemMeta(backmeta);
+		tpInv.setItem(9, back);
+		
+		return tpInv; //Return the completed inventory
 	}
 	
 	public void tpFromInv (ItemStack clicked, Player player) {
-		Bukkit.dispatchCommand(player, "warp " + warps[clicked.getAmount()]);
+		getServer().dispatchCommand(player, "warp " + warps.get(clicked.getAmount() + 1));
 	}
 	
 	@EventHandler
@@ -78,10 +88,14 @@ public class Voxel extends JavaPlugin implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		ItemStack clicked = event.getCurrentItem();
 		if (event.getInventory().getName().equals(getMenuInv().getName())) {
-			if (clicked.getType() == Material.ENDER_PEARL) {
+			if (clicked.getType() == Material.getMaterial(getConfig().getInt("tpMenuItem"))) {
 				event.setCancelled(true);
 				player.closeInventory();
 				player.openInventory(getTpInv());
+			} else if (clicked.getType() == Material.ARROW) {
+				event.setCancelled(true);
+				player.closeInventory();
+				player.openInventory(getMenuInv());
 			}
 		} else if (event.getInventory().getName().equals(getTpInv().getName())) {
 			event.setCancelled(true);

@@ -1,6 +1,6 @@
 name: Voxelocity
 main: io.github.willywonka125.voxelocity.Voxel
-version: 0.0.2
+version: 0.2
 commands:
   voxel:
     description: Main Voxelocity command 
