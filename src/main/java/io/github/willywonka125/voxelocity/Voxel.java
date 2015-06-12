@@ -45,7 +45,6 @@ public class Voxel extends JavaPlugin implements Listener {
 	
 	public Inventory getMenuInv () {
 		ItemStack tpStack = new ItemStack(Material.getMaterial(getConfig().getInt("tpMenuItem")), 1);
-		getLogger().info("Material gotten: " + tpStack.getItemMeta().getDisplayName());
 		ItemMeta tpMeta = tpStack.getItemMeta();
 		tpMeta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Teleport");
 		List<String> lore = new ArrayList<String>(); 
@@ -74,13 +73,13 @@ public class Voxel extends JavaPlugin implements Listener {
 		ItemMeta backmeta = back.getItemMeta();
 		backmeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Back");
 		back.setItemMeta(backmeta);
-		tpInv.setItem(9, back);
+		tpInv.setItem(8, back);
 		
 		return tpInv; //Return the completed inventory
 	}
 	
-	public void tpFromInv (ItemStack clicked, Player player) {
-		getServer().dispatchCommand(player, "warp " + warps.get(clicked.getAmount() + 1));
+	public void tpFromInv (String warp, Player player) {
+		getServer().dispatchCommand(player, "warp " + warps.get(warps.indexOf(warp)));
 	}
 	
 	@EventHandler
@@ -92,14 +91,15 @@ public class Voxel extends JavaPlugin implements Listener {
 				event.setCancelled(true);
 				player.closeInventory();
 				player.openInventory(getTpInv());
-			} else if (clicked.getType() == Material.ARROW) {
+			}
+		} else if (event.getInventory().getName().equals(getTpInv().getName())) {
+			if (clicked.getType() == Material.ARROW) {
 				event.setCancelled(true);
 				player.closeInventory();
 				player.openInventory(getMenuInv());
-			}
-		} else if (event.getInventory().getName().equals(getTpInv().getName())) {
-			event.setCancelled(true);
-			tpFromInv(clicked, player);
+			} else {
+				event.setCancelled(true);
+				tpFromInv(ChatColor.stripColor(clicked.getItemMeta().getDisplayName()), player); }
 		}
 		//Place future click shits here
 	}
