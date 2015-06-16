@@ -11,3 +11,14 @@ warps:
 tpMenuItem: 368
 #ItemID to use for each warp.
 warpItem: 276
+
+#PocketChest configuration
+
+#Maximum number of PocketChests a player can buy
+maxChests: 1
+
+#Maximum number of rows a player can buy, per chest (each row has 9 slots)
+maxChestRows: 3
+
+#Cost per row when buying chest. (Money taken from player's account via Vault)
+costPerRow: 100

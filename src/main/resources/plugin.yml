@@ -1,6 +1,7 @@
 name: Voxelocity
 main: io.github.willywonka125.voxelocity.Voxel
 version: 0.2
+depend: [Vault]
 commands:
   voxel:
     description: Main Voxelocity command 
@@ -9,3 +10,7 @@ commands:
   wild:
     description: Teleports you to a random location
     usage: /wild
+  pchest:
+    description: PocketChest main command
+    usage: /pchest
+    aliases: [pc, pocketchest, chest]
